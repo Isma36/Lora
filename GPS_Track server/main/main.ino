@@ -532,6 +532,12 @@ void loop() {
     gps_time(t_buf, sizeof(t_buf));
     printf("%s, %4.2f, %3.2f, %3.2f, %2.2f, %5.2f, %4.6f, %4.6f, %d\n", t_buf, data.pressure, data.ext_temperature_ours, data.temperature, data.humidity, data.altitude, data.longitude, data.latitude, data.CP10Sec);
     snprintf(log_entry, LINE_SIZE, "%s,%4.2f,%3.2f,%3.2f,%2.2f,%5.2f,%4.6f,%4.6f, %d\n", t_buf, data.pressure, data.ext_temperature_ours, data.temperature, data.humidity, data.altitude, data.longitude, data.latitude, data.CP10Sec);
+    // Asegurar que siempre tenga 64 bytes rellenando con espacios
+    int len = strlen(log_entry);
+    if (len < 63) { // 63 porque el último byte debe ser '\0'
+        memset(log_entry + len, ' ', 63 - len);
+        log_entry[63] = '\0';  // Asegurar terminación
+    }
     logger(log_entry); // Max. 22272 records de 64 bytes
     Serial.println(baChStatus);
     Serial.print("  Batt Voltage = "); 
